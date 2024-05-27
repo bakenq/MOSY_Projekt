@@ -5,12 +5,11 @@ import Value from './src/components/Value';
 import RingProgress from './src/components/RingProgress';
 
 
-
 export default function App() {
   return (
     <View style={styles.container}>
 
-      <RingProgress progress={0.35} />
+      <RingProgress progress={0.7} />
 
       <View style={styles.values}>
         <Value label="Steps" value="1219" />
