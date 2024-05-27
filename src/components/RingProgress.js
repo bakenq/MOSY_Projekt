@@ -3,6 +3,7 @@ import SVG, { Circle } from 'react-native-svg';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useEffect } from 'react';
 import { AntDesign } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -14,11 +15,16 @@ const RingProgress = ({ radius = 125, strokeWidth = 35, progress }) => {
     const innerRadius = radius - strokeWidth / 2;
     const circumference = 2 * Math.PI * innerRadius;
 
+    const isFocused = useIsFocused();
     const fill = useSharedValue(0);
 
     useEffect(() => {
-        fill.value = withTiming(progress, { duration: 1000 });
-    }, [progress]);
+        if (isFocused) {
+            fill.value = withTiming(progress, { duration: 1000 });
+        } else {
+            fill.value = 0; // Animation plays again after switching Tabs, idk if we want this
+        }
+    }, [isFocused, progress]);
 
     const animatedProps = useAnimatedProps(() => ({
         strokeDasharray: [circumference * fill.value, circumference],
