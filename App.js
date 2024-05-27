@@ -9,7 +9,7 @@ export default function App() {
   return (
     <View style={styles.container}>
 
-      <RingProgress progress={0.7} />
+      <RingProgress radius={150} strokeWidth={40} progress={0.7} />
 
       <View style={styles.values}>
         <Value label="Steps" value="1219" />

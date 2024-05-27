@@ -2,6 +2,7 @@ import { View, Text } from 'react-native';
 import SVG, { Circle } from 'react-native-svg';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useEffect } from 'react';
+import { AntDesign } from '@expo/vector-icons';
 
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -51,6 +52,12 @@ const RingProgress = ({ radius = 125, strokeWidth = 35, progress }) => {
                     {...circleDefaultProps}
                 />
             </SVG>
+            <AntDesign
+                name="arrowright"
+                size={strokeWidth * 0.8}
+                color="black"
+                style={{ position: 'absolute', alignSelf: 'center', top: strokeWidth * 0.1 }}
+            />
         </View>
     );
 };
