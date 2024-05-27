@@ -16,39 +16,39 @@ const RingProgress = ({ radius = 125, strokeWidth = 35, progress }) => {
     const fill = useSharedValue(0);
 
     useEffect(() => {
-        fill.value = withTiming(progress, { duration: 1000});
+        fill.value = withTiming(progress, { duration: 1000 });
     }, [progress]);
 
     const animatedProps = useAnimatedProps(() => ({
         strokeDasharray: [circumference * fill.value, circumference],
     }));
 
+
+    const circleDefaultProps = {
+        r: innerRadius,
+        cx: radius,
+        cy: radius,
+        originX: radius,
+        originY: radius,
+        fill: 'transparent',
+        strokeWidth: strokeWidth,
+        stroke: color,
+        strokeLinecap: 'round',
+        rotation: '-90',
+    };
+
     return (
         <View style={{ width: radius * 2, height: radius * 2, alignSelf: 'center', }}>
             <SVG>
                 {/* Background Ring */}
                 <Circle
-                    r={innerRadius}
-                    cx={radius}
-                    cy={radius}
-                    fill='transparent'
-                    strokeWidth={strokeWidth}
-                    stroke={color}
+                    {...circleDefaultProps}
                     opacity={0.25}
                 />
                 {/* Foreground Ring */}
                 <AnimatedCircle
                     animatedProps={animatedProps}
-                    r={innerRadius}
-                    cx={radius}
-                    cy={radius}
-                    originX={radius}
-                    originY={radius}
-                    fill='transparent'
-                    strokeWidth={strokeWidth}
-                    stroke={color}
-                    strokeLinecap='round'
-                    rotation='-90'
+                    {...circleDefaultProps}
                 />
             </SVG>
         </View>
