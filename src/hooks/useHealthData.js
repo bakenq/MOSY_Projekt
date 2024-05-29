@@ -1,72 +1,45 @@
-// General Import
-import { useEffect, useState } from "react";
-import { Platform } from "react-native";
+import React, { useEffect } from 'react';
+import GoogleFit, { Scopes } from 'react-native-google-fit';
 
-// Android Imports
-import { initialize, requestPermission, readRecords } from 'react-native-health-connect';
-//import { TimeRangeFilter } from 'react-native-health-connect/lib/typescript/types/base.types';
-
-// iOS Imports
-/*
-import AppleHealthKit, {
-  HealthInputOptions,
-  HealthKitPermissions,
-} from 'react-native-health';
-*/
-
-// iOS Permissions
-/*
-const permissions: HealthKitPermissions = {
-  permissions: {
-    read: [
-      AppleHealthKit.Constants.Permissions.Steps,
-      AppleHealthKit.Constants.Permissions.FlightsClimbed,
-      AppleHealthKit.Constants.Permissions.DistanceWalkingRunning,
-    ],
-    write: [],
-  },
-};
-*/
-
-const useHealthData = (date) => {
-    //const [hasPermission, setHasPermission] = useState(false);
-    const [steps, setSteps] = useState(0);
-    const [flights, setFlights] = useState(0);
-    const [distance, setDistance] = useState(0);
-
-    // Android - Health Connect
-    const readSampleData = async () => {
-        // initialize the client
-        const isInitialized = await initialize();
-
-        // request permissions
-        const grantedPermissions = await requestPermission([
-            { accessType: 'read', recordType: 'ActiveCaloriesBurned' },
-        ]);
-
-        // check if granted
-
-        const result = await readRecords('ActiveCaloriesBurned', {
-            timeRangeFilter: {
-                operator: 'between',
-                startTime: '2023-01-09T12:00:00.405Z',
-                endTime: '2023-01-09T23:53:15.405Z',
-            },
-        });
-        console.log(result);
-    };
-
+const useHealthData = () => {
     useEffect(() => {
-        if (Platform.OS != 'android') {
-            return;
-        }
-        readSampleData();
-    })
+        const options = {
+            scopes: [
+                Scopes.FITNESS_ACTIVITY_READ,
+                Scopes.FITNESS_ACTIVITY_WRITE,
+                Scopes.FITNESS_LOCATION_READ,
+                Scopes.FITNESS_BODY_READ,
+            ],
+        };
 
-    return { steps, distance, flights };
+        GoogleFit.authorize(options)
+            .then((authResult) => {
+                if (authResult.success) {
+                    console.log('AUTH SUCCESS');
+                    fetchStepCount();
+                } else {
+                    console.log('AUTH FAILED', authResult.message);
+                }
+            })
+            .catch(() => {
+                console.log('AUTH ERROR');
+            });
+    }, []);
 
+    const fetchStepCount = () => {
+        const opt = {
+            startDate: '2024-01-01T00:00:17.971Z', // required
+            endDate: new Date().toISOString(), // required
+        };
 
-    // iOS - Heatlh Kit (to be implemented?)
+        GoogleFit.getDailyStepCountSamples(opt)
+            .then((res) => {
+                console.log('Daily steps:', res);
+            })
+            .catch((err) => {
+                console.warn(err);
+            });
+    };
 };
 
 export default useHealthData;

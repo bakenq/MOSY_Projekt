@@ -3,7 +3,7 @@
     "name": "MOSY_Projekt",
     "slug": "MOSY_Projekt",
     "version": "1.0.0",
-    "orientation": "default",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -19,13 +19,19 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.example.mosy"
+      "package": "com.example.mosy",
+      "permissions": [
+        "android.permission.health.READ_STEPS",
+        "android.permission.health.WRITE_STEPS",
+        "android.permission.health.READ_FLOORS_CLIMBED",
+        "android.permission.health.READ_DISTANCE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-        "react-native-health-connect",
+      "expo-dev-client",
       [
         "expo-build-properties",
         {
@@ -36,7 +42,8 @@
             "minSdkVersion": 26
           }
         }
-      ]
+      ],
+      "react-native-health-connect"
     ]
   }
 }
