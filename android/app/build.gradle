@@ -83,7 +83,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.mosyprojekt"
+    namespace 'com.example.mosy'
     defaultConfig {
         applicationId 'com.example.mosy'
         minSdkVersion rootProject.ext.minSdkVersion

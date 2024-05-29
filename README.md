@@ -7,3 +7,7 @@ This is a simple health and fitness app developed as a university project. The a
 - Track your daily steps and distance covered
 - Set fitness goals and monitor your progress
 - Earn rewards and achievements for reaching milestones
+
+
+# Notes
+?
