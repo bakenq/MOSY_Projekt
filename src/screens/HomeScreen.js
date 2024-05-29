@@ -5,59 +5,20 @@ import { useState, useEffect } from 'react';
 import Value from '../components/Value';
 import RingProgress from '../components/RingProgress';
 
-import GoogleFit, { Scopes } from 'react-native-google-fit';
-import googleFit from 'react-native-google-fit';
-
-//import useHealthData from '../hooks/useHealthData';
+import useHealthData from '../hooks/useHealthData';
 
 
-function HomeScreen() {
+const HomeScreen = () => {
   const [date, setDate] = useState(new Date());
-  const [steps, setSteps] = useState(0);
-  //const { steps, granted, error, getStepCount } = useHealthData();
-  const { distance, flights } = { distance: 5, flights: 6 };
+  const healthData = useHealthData();
+  const [steps, setSteps] = useState(healthData.steps);
+  const stepLength = 0.762; // Average step length in meters
+  const distance = steps * stepLength; // convert steps to distance
 
   useEffect(() => {
-    const options = {
-        scopes: [
-            Scopes.FITNESS_ACTIVITY_READ,
-            Scopes.FITNESS_ACTIVITY_WRITE,
-            Scopes.FITNESS_LOCATION_READ,
-            Scopes.FITNESS_BODY_READ,
-        ],
-    };
-
-    GoogleFit.authorize(options)
-        .then((authResult) => {
-            if (authResult.success) {
-                console.log('AUTH SUCCESS');
-                fetchStepCount();
-            } else {
-                console.log('AUTH FAILED', authResult.message);
-            }
-        })
-        .catch(() => {
-            console.log('AUTH ERROR');
-        });
-}, []);
-
-const fetchStepCount = () => {
-    const opt = {
-        startDate: '2024-01-01T00:00:17.971Z', // required
-        endDate: new Date().toISOString(), // required
-    };
-
-    GoogleFit.getDailyStepCountSamples(opt)
-        .then((res) => {
-            console.log('Daily steps:', res[2].steps[0].value);
-            setSteps(res[2].steps[0].value);
-        })
-        .catch((err) => {
-            console.warn(err);
-        });
-};
-
-  console.log(`Steps: ${steps} | Distance: ${distance}m | Flights: ${flights}`);
+    setSteps(healthData.steps);
+    console.log(`Steps: ${steps} | Distance: ${distance}m`);
+  }, [healthData]);
 
   const changeDate = (numDays) => {
     const currentDate = new Date(date); // Create copy of current date
@@ -73,7 +34,7 @@ const fetchStepCount = () => {
       <View style={styles.values}>
         <Value label="Steps" value={steps.toString()} />
         <Value label="Distance" value={`${(distance / 1000).toFixed(2)} km`} />
-        <Value label="Flights Climbed" value={flights.toString()} />
+        <Value label="Quests Completed" value='0' />
       </View>
       <StatusBar style="auto" />
     </View>

@@ -1,3 +1,5 @@
+// not sure if this is still needed
+
 import * as GoogleFit from 'react-native-google-fit';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
