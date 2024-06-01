@@ -12,11 +12,13 @@ const HomeScreen = () => {
   const [date, setDate] = useState(new Date());
   const healthData = useHealthData();
   const [steps, setSteps] = useState(healthData.steps);
+  const [distance, setDistance] = useState(healthData.distance);
   const stepLength = 0.762; // Average step length in meters
-  const distance = steps * stepLength; // convert steps to distance
+  //const distance = steps * stepLength; // convert steps to distance
 
   useEffect(() => {
     setSteps(healthData.steps);
+    setDistance(healthData.distance);
     console.log(`Steps: ${steps} | Distance: ${distance}m`);
   }, [healthData]);
 
@@ -32,8 +34,8 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <RingProgress radius={150} strokeWidth={40} progress={steps / 6000} />
       <View style={styles.values}>
-        <Value label="Steps" value={steps.toString()} />
-        <Value label="Distance" value={`${(distance / 1000).toFixed(2)} km`} />
+        <Value label="Daily Steps" value={steps.toString()} />
+        <Value label="Daily Distance" value={`${(distance / 1000).toFixed(2)} km`} />
         <Value label="Quests Completed" value='0' />
       </View>
       <StatusBar style="auto" />
