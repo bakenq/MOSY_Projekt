@@ -32,7 +32,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <RingProgress radius={150} strokeWidth={40} progress={steps / 6000} />
+      <RingProgress radius={150} strokeWidth={40} progress={steps / 1000} />
       <View style={styles.values}>
         <Value label="Daily Steps" value={steps.toString()} />
         <Value label="Daily Distance" value={`${(distance / 1000).toFixed(2)} km`} />
