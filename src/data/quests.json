@@ -1,0 +1,14 @@
+[
+    {
+      "id": 1,
+      "description": "Take 500 steps today",
+      "targetSteps": 500,
+      "xpReward": 50
+    },
+    {
+      "id": 2,
+      "description": "Take 1000 steps today",
+      "targetSteps": 1000,
+      "xpReward": 100
+    }
+  ]

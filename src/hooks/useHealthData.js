@@ -1,34 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import GoogleFit, { Scopes } from 'react-native-google-fit';
 
 const useHealthData = () => {
     const [steps, setSteps] = useState(0);
     const [distance, setDistance] = useState(0);
 
-    useEffect(() => {
-        const options = {
-            scopes: [
-                Scopes.FITNESS_ACTIVITY_READ,
-                Scopes.FITNESS_ACTIVITY_WRITE,
-                Scopes.FITNESS_LOCATION_READ,
-                Scopes.FITNESS_BODY_READ,
-            ],
-        };
+    // Fetching is triggered when screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            const options = {
+                scopes: [
+                    Scopes.FITNESS_ACTIVITY_READ,
+                    Scopes.FITNESS_ACTIVITY_WRITE,
+                    Scopes.FITNESS_LOCATION_READ,
+                    Scopes.FITNESS_BODY_READ,
+                ],
+            };
 
-        GoogleFit.authorize(options)
-            .then((authResult) => {
-                if (authResult.success) {
-                    console.log('AUTH SUCCESS');
-                    fetchStepCount();
-                    fetchDistance();
-                } else {
-                    console.log('AUTH FAILED', authResult.message);
-                }
-            })
-            .catch(() => {
-                console.log('AUTH ERROR');
-            });
-    }, []);
+            GoogleFit.authorize(options)
+                .then((authResult) => {
+                    if (authResult.success) {
+                        console.log('AUTH SUCCESS');
+                        fetchStepCount();
+                        fetchDistance();
+                    } else {
+                        console.log('AUTH FAILED', authResult.message);
+                    }
+                })
+                .catch(() => {
+                    console.log('AUTH ERROR');
+                });
+        }, [])
+    );
 
     const fetchStepCount = () => {
         const now = new Date();

@@ -3,24 +3,46 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native
 import * as Progress from 'react-native-progress';
 import { questsData } from '../data/questsData';
 
-import Quests from '../components/Quests';
-
 function QuestsScreen() {
+  const buttonIsDisabled = true; // Replace with actual condition
+
+  const renderQuestItem = ({ item }) => (
+    <View style={styles.questItem}>
+      <Text style={styles.questName}>{item.name}</Text>
+      <Text style={styles.questGoal}>{item.goal}</Text>
+      <Text style={styles.questExp}>{`EXP: ${item.expReward}`}</Text>
+      <Progress.Bar
+        style={styles.progressBar}
+        progress={0.6}
+        color="#EE0F55"
+        width={null}
+        height={15}
+        borderWidth={2}
+        animated={true}
+        animationType='timing'
+      />
+      <TouchableOpacity style={buttonIsDisabled ? styles.buttonDisabled : styles.button} disabled={buttonIsDisabled}>
+        <Text style={styles.buttonText}>Claim</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <Quests steps={1000} />
+      <FlatList
+        data={questsData}
+        renderItem={renderQuestItem}
+        keyExtractor={(item) => item.name}
+      />
     </View>
-
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     justifyContent: 'center',
-    alignItems: 'center',
     padding: 12,
     paddingTop: 50,
   },
