@@ -8,6 +8,7 @@ const quests = require('../data/quests.json');
 const Quests = ({ steps }) => {
   const [userXP, setUserXP] = useState(0);
   const [userLevel, setUserLevel] = useState(1);
+  const [numberOfCompletedQuests, setNumberOfCompletedQuests] = useState(0);
   const [completedQuests, setCompletedQuests] = useState([]);
   const [claimedQuests, setClaimedQuests] = useState([]);
 
@@ -43,11 +44,13 @@ const Quests = ({ steps }) => {
   const loadData = async () => {
     const xp = await AsyncStorage.getItem('userXP');
     const level = await AsyncStorage.getItem('userLevel');
+    const numberOfCompletedQuests = await AsyncStorage.getItem('numberOfCompletedQuests');
     const completed = await AsyncStorage.getItem('completedQuests');
     const claimed = await AsyncStorage.getItem('claimedQuests');
 
     if (xp) setUserXP(parseInt(xp));
     if (level) setUserLevel(parseInt(level));
+    if (numberOfCompletedQuests) setNumberOfCompletedQuests(parseInt(numberOfCompletedQuests));
     if (completed) setCompletedQuests(JSON.parse(completed));
     if (claimed) setClaimedQuests(JSON.parse(claimed));
   };
@@ -56,6 +59,7 @@ const Quests = ({ steps }) => {
     try {
       await AsyncStorage.setItem('userXP', userXP.toString());
       await AsyncStorage.setItem('userLevel', userLevel.toString());
+      await AsyncStorage.setItem('numberOfCompletedQuests', numberOfCompletedQuests.toString());
       await AsyncStorage.setItem('completedQuests', JSON.stringify(completedQuests));
       await AsyncStorage.setItem('claimedQuests', JSON.stringify(claimedQuests));
       console.log('User Data saved successfully');
@@ -78,14 +82,9 @@ const Quests = ({ steps }) => {
     const quest = quests.find(q => q.id === questId);
     if (claimedQuests.includes(questId)) {
       console.log(`Quest ${questId} already claimed!`);
-      // mark the quest as completed if not already marked
-      if (!completedQuests.includes(questId)) {
-        setCompletedQuests([...completedQuests, questId]);
-      }
 
     } else if (quest && completedQuests.includes(questId)) {
-      // Add quest to claimed quests
-      setClaimedQuests([...claimedQuests, questId]);
+      
 
       let newXP = userXP + quest.xpReward;
       let newLevel = userLevel;
@@ -100,6 +99,11 @@ const Quests = ({ steps }) => {
 
       // Ensure state updates are applied before saving
       await new Promise(resolve => setTimeout(resolve, 0)); // Wait for next event loop tick
+
+      // Increment number of completed quests
+      setNumberOfCompletedQuests(numberOfCompletedQuests + 1);
+      // Add quest to claimed quests
+      setClaimedQuests([...claimedQuests, questId]);
 
       // Update state once with the new values
       setUserLevel(newLevel);

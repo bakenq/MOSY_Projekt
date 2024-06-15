@@ -14,6 +14,7 @@ const HomeScreen = () => {
   // User data
   const [userXP, setUserXP] = useState(0);
   const [userLevel, setUserLevel] = useState(1);
+  const [numberOfCompletedQuests, setNumberOfCompletedQuests] = useState(0);
   const [completedQuests, setCompletedQuests] = useState([]);
   // Health etc.
   const [date, setDate] = useState(new Date());
@@ -49,17 +50,19 @@ const HomeScreen = () => {
   useEffect(() => {
     console.log('Updated User XP:', userXP);
     console.log('Updated User Level:', userLevel);
-    console.log('Updated Completed Quests:', completedQuests);
-  }, [userXP, userLevel]);
+    console.log('Updated Number Completed Quests:', numberOfCompletedQuests);
+  }, [userXP, userLevel, numberOfCompletedQuests]);
 
   const loadData = async () => {
     const xp = await AsyncStorage.getItem('userXP');
     const level = await AsyncStorage.getItem('userLevel');
-    const completed = await AsyncStorage.getItem('completedQuests');
+    const numberOfCompletedQuests = await AsyncStorage.getItem('numberOfCompletedQuests');
+    //const completed = await AsyncStorage.getItem('completedQuests');
 
     if (xp) setUserXP(parseInt(xp));
     if (level) setUserLevel(parseInt(level));
-    if (completed) setCompletedQuests(JSON.parse(completed));
+    if (numberOfCompletedQuests) setNumberOfCompletedQuests(parseInt(numberOfCompletedQuests));
+    //if (completed) setCompletedQuests(JSON.parse(completed));
   };
 
   // Load health data
@@ -90,7 +93,7 @@ const HomeScreen = () => {
       <View style={styles.values}>
         <Value label="Daily Steps" value={steps.toString()} />
         <Value label="Daily Distance" value={`${(distance / 1000).toFixed(2)} km`} />
-        <Value label="Quests Completed" value='0' />
+        <Value label="Quests Completed" value={numberOfCompletedQuests.toString()} />
       </View>
       <StatusBar style="auto" />
     </View>
