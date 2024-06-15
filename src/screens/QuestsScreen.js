@@ -18,9 +18,7 @@ function QuestsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: 'black',
     padding: 12,
     paddingTop: 50,
   },
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   button: {
-    backgroundColor: 'white',
+    backgroundColor: '#EE0F55',
     padding: 10,
     borderRadius: 15,
     alignItems: 'center',

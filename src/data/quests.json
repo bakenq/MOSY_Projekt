@@ -10,5 +10,11 @@
       "description": "Take 1000 steps today",
       "targetSteps": 1000,
       "xpReward": 100
+    },
+    {
+      "id": 3,
+      "description": "Take 5000 steps today",
+      "targetSteps": 5000,
+      "xpReward": 500
     }
   ]

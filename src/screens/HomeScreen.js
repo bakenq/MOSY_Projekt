@@ -28,6 +28,7 @@ const HomeScreen = () => {
   // Call once on mount
   useEffect(() => {
     loadData();
+    console.log('HomeScreen mounted');
   }, []);
 
   // Call also when health data changes
@@ -49,7 +50,7 @@ const HomeScreen = () => {
     console.log('Updated User XP:', userXP);
     console.log('Updated User Level:', userLevel);
     console.log('Updated Completed Quests:', completedQuests);
-  }, [userXP]);
+  }, [userXP, userLevel]);
 
   const loadData = async () => {
     const xp = await AsyncStorage.getItem('userXP');

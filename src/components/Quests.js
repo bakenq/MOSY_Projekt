@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Button, } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -13,6 +13,7 @@ const Quests = ({ steps }) => {
   useEffect(() => {
     // Load user data
     loadData();
+    checkQuestCompletion();
   }, []);
 
   useEffect(() => {
@@ -22,6 +23,8 @@ const Quests = ({ steps }) => {
 
   useEffect(() => {
     console.log('Updated User XP:', userXP);
+    console.log('Updated User Level:', userLevel);
+    saveData();
   }, [userXP]);
 
   const loadData = async () => {
@@ -73,10 +76,8 @@ const Quests = ({ steps }) => {
       await new Promise(resolve => setTimeout(resolve, 0)); // Wait for next event loop tick
 
       // Update state once with the new values
-      setUserXP(newXP);
       setUserLevel(newLevel);
-
-      saveData();
+      setUserXP(newXP);
 
       // Debugging: Log the updated value from AsyncStorage
       AsyncStorage.getItem('userXP').then(storedXP => {
@@ -86,12 +87,19 @@ const Quests = ({ steps }) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       {quests.map((quest) => (
-        <View key={quest.id}>
-          <Text>{quest.description}</Text>
-          {completedQuests.includes(quest.id) && (
-            <Button title="Claim Reward" onPress={() => claimReward(quest.id)} />
+        <View key={quest.id} style={styles.questItem}>
+          <Text style={styles.questDescription}>{quest.description}</Text>
+          <Text style={styles.questExp}>Reward: {quest.xpReward} XP</Text>
+          {completedQuests.includes(quest.id) ? (
+            <TouchableOpacity style={styles.button} onPress={() => claimReward(quest.id)} >
+              <Text style={styles.buttonText}>Claim Reward</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={[styles.button, styles.buttonDisabled]} disabled={true} >
+              <Text style={styles.buttonText}>Quest Incomplete</Text>
+            </TouchableOpacity>
           )}
         </View>
       ))}
@@ -103,10 +111,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  questName: {
+  questDescription: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
@@ -130,18 +136,14 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   button: {
-    backgroundColor: 'white',
+    backgroundColor: '#EE0F55',
     padding: 10,
     borderRadius: 15,
     alignItems: 'center',
     marginTop: 10,
   },
   buttonDisabled: {
-    backgroundColor: '#AFB3BE',
-    padding: 10,
-    borderRadius: 15,
-    alignItems: 'center',
-    marginTop: 10,
+    backgroundColor: '#ccc',
   },
   buttonText: {
     color: 'white',
