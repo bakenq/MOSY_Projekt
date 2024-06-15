@@ -16,5 +16,23 @@
       "description": "Take 5000 steps today",
       "targetSteps": 5000,
       "xpReward": 500
+    },
+    {
+      "id": 4,
+      "description": "Take 10000 steps today",
+      "targetSteps": 10000,
+      "xpReward": 1000
+    },
+    {
+      "id": 5,
+      "description": "Take 15000 steps today",
+      "targetSteps": 15000,
+      "xpReward": 1500
+    },
+    {
+      "id": 6,
+      "description": "Take 20000 steps today",
+      "targetSteps": 20000,
+      "xpReward": 2000
     }
   ]

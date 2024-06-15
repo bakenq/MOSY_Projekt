@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -9,32 +9,47 @@ const Quests = ({ steps }) => {
   const [userXP, setUserXP] = useState(0);
   const [userLevel, setUserLevel] = useState(1);
   const [completedQuests, setCompletedQuests] = useState([]);
+  const [claimedQuests, setClaimedQuests] = useState([]);
+
+  // Function to clear all data from AsyncStorage
+  const clearAllAsyncStorage = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('AsyncStorage has been cleared!');
+    } catch (error) {
+      console.error('Error clearing AsyncStorage:', error);
+    }
+  };
 
   useEffect(() => {
     // Load user data
+    setCompletedQuests([]);
     loadData();
-    checkQuestCompletion();
   }, []);
 
   useEffect(() => {
     // Check for quest completion
     checkQuestCompletion();
-  }, [steps]);
+  }, [steps, completedQuests]);
 
   useEffect(() => {
     console.log('Updated User XP:', userXP);
     console.log('Updated User Level:', userLevel);
+    console.log('Updated Completed Quests:', completedQuests);
+    console.log('Updated Claimed Quests:', claimedQuests);
     saveData();
-  }, [userXP]);
+  }, [userXP, userLevel, completedQuests, claimedQuests]); // userXP would probably be enough?
 
   const loadData = async () => {
     const xp = await AsyncStorage.getItem('userXP');
     const level = await AsyncStorage.getItem('userLevel');
     const completed = await AsyncStorage.getItem('completedQuests');
+    const claimed = await AsyncStorage.getItem('claimedQuests');
 
     if (xp) setUserXP(parseInt(xp));
     if (level) setUserLevel(parseInt(level));
     if (completed) setCompletedQuests(JSON.parse(completed));
+    if (claimed) setClaimedQuests(JSON.parse(claimed));
   };
 
   const saveData = async () => {
@@ -42,6 +57,7 @@ const Quests = ({ steps }) => {
       await AsyncStorage.setItem('userXP', userXP.toString());
       await AsyncStorage.setItem('userLevel', userLevel.toString());
       await AsyncStorage.setItem('completedQuests', JSON.stringify(completedQuests));
+      await AsyncStorage.setItem('claimedQuests', JSON.stringify(claimedQuests));
       console.log('User Data saved successfully');
     } catch (error) {
       console.error('Error saving data:', error);
@@ -60,7 +76,17 @@ const Quests = ({ steps }) => {
 
   const claimReward = async (questId) => {
     const quest = quests.find(q => q.id === questId);
-    if (quest && completedQuests.includes(questId)) {
+    if (claimedQuests.includes(questId)) {
+      console.log(`Quest ${questId} already claimed!`);
+      // mark the quest as completed if not already marked
+      if (!completedQuests.includes(questId)) {
+        setCompletedQuests([...completedQuests, questId]);
+      }
+
+    } else if (quest && completedQuests.includes(questId)) {
+      // Add quest to claimed quests
+      setClaimedQuests([...claimedQuests, questId]);
+
       let newXP = userXP + quest.xpReward;
       let newLevel = userLevel;
 
@@ -87,23 +113,27 @@ const Quests = ({ steps }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {quests.map((quest) => (
         <View key={quest.id} style={styles.questItem}>
           <Text style={styles.questDescription}>{quest.description}</Text>
           <Text style={styles.questExp}>Reward: {quest.xpReward} XP</Text>
-          {completedQuests.includes(quest.id) ? (
+          {completedQuests.includes(quest.id) && !claimedQuests.includes(quest.id) ? (
             <TouchableOpacity style={styles.button} onPress={() => claimReward(quest.id)} >
               <Text style={styles.buttonText}>Claim Reward</Text>
             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={[styles.button, styles.buttonDisabled]} disabled={true} >
-              <Text style={styles.buttonText}>Quest Incomplete</Text>
+          ) : claimedQuests.includes(quest.id) ? (
+            <TouchableOpacity style={[styles.button, styles.buttonClaimed]} disabled={true} >
+              <Text style={styles.buttonText}>Reward Claimed</Text>
             </TouchableOpacity>
+          ) : (
+          <TouchableOpacity style={[styles.button, styles.buttonDisabled]} disabled={true} >
+            <Text style={styles.buttonText}>Quest Incomplete</Text>
+          </TouchableOpacity>
           )}
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -144,6 +174,9 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: '#ccc',
+  },
+  buttonClaimed: {
+    backgroundColor: '#0feea8',
   },
   buttonText: {
     color: 'white',

@@ -9,7 +9,7 @@ function QuestsScreen() {
 
   return (
     <View style={styles.container}>
-      <Quests steps={1000} />
+      <Quests steps={10400} />
     </View>
 
   );
