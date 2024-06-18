@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 
+import Achievements from '../components/Achievements';
+
 function AchievementsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Achievements!</Text>
+      <Achievements steps={10000} />
     </View>
   );
 }
@@ -12,8 +14,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    justifyContent: 'center',
     padding: 12,
+    paddingTop: 50,
   },
   text: {
     color: 'white',

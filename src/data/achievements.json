@@ -1,0 +1,16 @@
+[
+    {
+      "id": 1,
+      "title": "Walk Warrior",
+      "description": "Take 50000 steps in total",
+      "targetSteps": 50000,
+      "xpReward": 5000
+    },
+    {
+      "id": 2,
+      "title": "Walk Master",
+      "description": "Take 100000 steps in total",
+      "targetSteps": 100000,
+      "xpReward": 10000
+    }
+  ]
