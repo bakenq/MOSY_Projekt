@@ -38,7 +38,7 @@ export default function App() {
             return <AntDesign name={iconName} size={size} color={color} />;
           },
           headerShown: false,
-          tabBarActiveTintColor: 'white',
+          tabBarActiveTintColor: '#EE0F55',
           tabBarInactiveTintColor: '#AFB3BE',
           tabBarStyle: {
             backgroundColor: 'black',
