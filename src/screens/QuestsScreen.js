@@ -2,14 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { questsData } from '../data/questsData';
+import useHealthData from '../hooks/useHealthData';
 
 import Quests from '../components/Quests';
 
 function QuestsScreen() {
+  const healthData = useHealthData();
 
   return (
     <View style={styles.container}>
-      <Quests steps={10400} />
+      <Quests steps={healthData.steps} />
     </View>
 
   );

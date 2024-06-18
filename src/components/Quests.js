@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ProgressBar } from 'react-native-paper';
+import * as Progress from 'react-native-progress';
 
 
 const quests = require('../data/quests.json');
@@ -29,6 +31,7 @@ const Quests = ({ steps }) => {
   useEffect(() => {
     // Load user data
     loadData();
+    resetClaimedQuestsDaily();
   }, []);
 
   useEffect(() => {
@@ -149,10 +152,13 @@ const Quests = ({ steps }) => {
 
   return (
     <ScrollView style={styles.container}>
-      {quests.map((quest) => (
+      {quests.map((quest) => {
+        const progress = Math.min(steps / quest.targetSteps, 1);
+        return (
         <View key={quest.id} style={styles.questItem}>
           <Text style={styles.questDescription}>{quest.description}</Text>
           <Text style={styles.questExp}>Reward: {quest.xpReward} XP</Text>
+          <ProgressBar progress={progress} color='#EE0F55' style={styles.progressBar} />
           {completedQuests.includes(quest.id) && !claimedQuests.some(claim => claim.questId === quest.id) ? (
             <TouchableOpacity style={styles.button} onPress={() => claimReward(quest.id)} >
               <Text style={styles.buttonText}>Claim Reward</Text>
@@ -167,7 +173,8 @@ const Quests = ({ steps }) => {
             </TouchableOpacity>
           )}
         </View>
-      ))}
+        );
+      })}
     </ScrollView>
   );
 };
@@ -199,6 +206,7 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     marginVertical: 8,
+    height: 8,
   },
   button: {
     backgroundColor: '#EE0F55',
