@@ -3,7 +3,6 @@ import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-nati
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ProgressBar } from 'react-native-paper';
-import * as Progress from 'react-native-progress';
 
 
 const quests = require('../data/quests.json');
@@ -57,17 +56,24 @@ const Quests = ({ steps }) => {
 
 
   const loadData = async () => {
-    const xp = await AsyncStorage.getItem('userXP');
-    const level = await AsyncStorage.getItem('userLevel');
-    const numberOfCompletedQuests = await AsyncStorage.getItem('numberOfCompletedQuests');
-    const completed = await AsyncStorage.getItem('completedQuests');
-    const claimed = await AsyncStorage.getItem('claimedQuests');
+    try {
+      const xp = await AsyncStorage.getItem('userXP');
+      const level = await AsyncStorage.getItem('userLevel');
+      const numberOfCompletedQuests = await AsyncStorage.getItem('numberOfCompletedQuests');
+      const completed = await AsyncStorage.getItem('completedQuests');
+      const claimed = await AsyncStorage.getItem('claimedQuests');
 
-    if (xp) setUserXP(parseInt(xp));
-    if (level) setUserLevel(parseInt(level));
-    if (numberOfCompletedQuests) setNumberOfCompletedQuests(parseInt(numberOfCompletedQuests));
-    if (completed) setCompletedQuests(JSON.parse(completed));
-    if (claimed) setClaimedQuests(JSON.parse(claimed));
+      if (xp) setUserXP(parseInt(xp));
+      if (level) setUserLevel(parseInt(level));
+      if (numberOfCompletedQuests) setNumberOfCompletedQuests(parseInt(numberOfCompletedQuests));
+      if (completed) setCompletedQuests(JSON.parse(completed));
+      if (claimed) setClaimedQuests(JSON.parse(claimed));
+
+      console.log('Quests: Loaded XP:', xp);
+      console.log('Quests: Loaded Level:', level);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
   };
 
   const saveData = async () => {
@@ -155,24 +161,24 @@ const Quests = ({ steps }) => {
       {quests.map((quest) => {
         const progress = Math.min(steps / quest.targetSteps, 1);
         return (
-        <View key={quest.id} style={styles.questItem}>
-          <Text style={styles.questDescription}>{quest.description}</Text>
-          <Text style={styles.questExp}>Reward: {quest.xpReward} XP</Text>
-          <ProgressBar progress={progress} color='#EE0F55' style={styles.progressBar} />
-          {completedQuests.includes(quest.id) && !claimedQuests.some(claim => claim.questId === quest.id) ? (
-            <TouchableOpacity style={styles.button} onPress={() => claimReward(quest.id)} >
-              <Text style={styles.buttonText}>Claim Reward</Text>
-            </TouchableOpacity>
-          ) : claimedQuests.some(claim => claim.questId === quest.id) ? (
-            <TouchableOpacity style={[styles.button, styles.buttonClaimed]} disabled={true} >
-              <Text style={styles.buttonText}>Reward Claimed</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={[styles.button, styles.buttonDisabled]} disabled={true} >
-              <Text style={styles.buttonText}>Quest Incomplete</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+          <View key={quest.id} style={styles.questItem}>
+            <Text style={styles.questDescription}>{quest.description}</Text>
+            <Text style={styles.questExp}>Reward: {quest.xpReward} XP</Text>
+            <ProgressBar progress={progress} color='#EE0F55' style={styles.progressBar} />
+            {completedQuests.includes(quest.id) && !claimedQuests.some(claim => claim.questId === quest.id) ? (
+              <TouchableOpacity style={styles.button} onPress={() => claimReward(quest.id)} >
+                <Text style={styles.buttonText}>Claim Reward</Text>
+              </TouchableOpacity>
+            ) : claimedQuests.some(claim => claim.questId === quest.id) ? (
+              <TouchableOpacity style={[styles.button, styles.buttonClaimed]} disabled={true} >
+                <Text style={styles.buttonText}>Reward Claimed</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={[styles.button, styles.buttonDisabled]} disabled={true} >
+                <Text style={styles.buttonText}>Quest Incomplete</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         );
       })}
     </ScrollView>

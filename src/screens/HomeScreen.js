@@ -51,36 +51,26 @@ const HomeScreen = () => {
     console.log('Updated User XP:', userXP);
     console.log('Updated User Level:', userLevel);
     console.log('Updated Number Completed Quests:', numberOfCompletedQuests);
+    loadData();
   }, [userXP, userLevel, numberOfCompletedQuests]);
 
   const loadData = async () => {
-    const xp = await AsyncStorage.getItem('userXP');
-    const level = await AsyncStorage.getItem('userLevel');
-    const numberOfCompletedQuests = await AsyncStorage.getItem('numberOfCompletedQuests');
-    //const completed = await AsyncStorage.getItem('completedQuests');
+    try {
+      const xp = await AsyncStorage.getItem('userXP');
+      const level = await AsyncStorage.getItem('userLevel');
+      const numberOfCompletedQuests = await AsyncStorage.getItem('numberOfCompletedQuests');
+      //const completed = await AsyncStorage.getItem('completedQuests');
 
-    if (xp) setUserXP(parseInt(xp));
-    if (level) setUserLevel(parseInt(level));
-    if (numberOfCompletedQuests) setNumberOfCompletedQuests(parseInt(numberOfCompletedQuests));
-    //if (completed) setCompletedQuests(JSON.parse(completed));
-  };
-
-  // Load health data
-  /*
-  useEffect(() => {
-    setSteps(healthData.steps);
-    setDistance(healthData.distance);
-    console.log(`Steps: ${steps} | Distance: ${distance}m`);
-  }, [healthData]);
-  */
-
-  // currently unused
-  const changeDate = (numDays) => {
-    const currentDate = new Date(date); // Create copy of current date
-    // Update date by adding/subtracting numDays
-    currentDate.setDate(currentDate.getDate() + numDays);
-
-    setDate(currentDate); // Update state
+      if (xp) setUserXP(parseInt(xp));
+      if (level) setUserLevel(parseInt(level));
+      if (numberOfCompletedQuests) setNumberOfCompletedQuests(parseInt(numberOfCompletedQuests));
+      //Debugging
+      console.log('Home: Loaded XP:', xp);
+      console.log('Home: Loaded Level:', level);
+      //if (completed) setCompletedQuests(JSON.parse(completed));
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
   };
 
   return (
