@@ -5,7 +5,48 @@ import GoogleFit, { Scopes } from 'react-native-google-fit';
 const useHealthData = () => {
     const [steps, setSteps] = useState(0);
     const [distance, setDistance] = useState(0);
+    const [isAuthorized, setIsAuthorized] = useState(false);
 
+    // Authorize once when the component mounts
+    useEffect(() => {
+        const options = {
+            scopes: [
+                Scopes.FITNESS_ACTIVITY_READ,
+                Scopes.FITNESS_ACTIVITY_WRITE,
+                Scopes.FITNESS_LOCATION_READ,
+                Scopes.FITNESS_BODY_READ,
+            ],
+        };
+
+        GoogleFit.authorize(options)
+            .then((authResult) => {
+                if (authResult.success) {
+                    console.log('AUTH SUCCESS');
+                    setIsAuthorized(true);
+                    fetchStepCount(); // Initial fetch
+                    fetchDistance(); // Initial fetch
+                } else {
+                    console.log('AUTH FAILED', authResult.message);
+                }
+            })
+            .catch(() => {
+                console.log('AUTH ERROR');
+            });
+    }, []);
+
+    // Fetch data periodically
+    useEffect(() => {
+        if (isAuthorized) {
+            const intervalId = setInterval(() => {
+                fetchStepCount();
+                fetchDistance();
+            }, 30000); // Fetch every 60 seconds
+
+            return () => clearInterval(intervalId); // Cleanup interval on unmount
+        }
+    }, [isAuthorized]);
+
+    /*
     // Fetching is triggered when screen is focused
     useFocusEffect(
         useCallback(() => {
@@ -33,6 +74,7 @@ const useHealthData = () => {
                 });
         }, [])
     );
+    */
 
     const fetchStepCount = () => {
         const now = new Date();
