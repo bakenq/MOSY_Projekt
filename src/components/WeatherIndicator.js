@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 
 const API_KEY = 'e905c71e69c8a0b6b9bc39934efd9ee9';
-const CITY = 'Ibiza'; // Example city
+const CITY = 'Hamburg'; // Example city
 
 const WeatherIndicator = () => {
     const [weather, setWeather] = useState(null);
@@ -59,7 +59,7 @@ const WeatherIndicator = () => {
 
 
     return (
-        <View style={styles.container}>
+        <View>
             <Text style={styles.title}>Current Weather</Text>
             <View style={styles.iconContainer}>
                 {renderWeatherIcon()}
@@ -71,15 +71,12 @@ const WeatherIndicator = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     title: {
         color: 'white',
         fontSize: 20,
     },
     iconContainer: {
-        alignItems: 'center',
     },
 });
 

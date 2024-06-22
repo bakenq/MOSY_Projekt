@@ -88,7 +88,6 @@ const HomeScreen = () => {
       <View style={styles.values}>
         <Value label="Daily Steps" value={steps.toString()} />
         <Value label="Daily Distance" value={`${(distance / 1000).toFixed(2)} km`} />
-        <Value label="Quests Completed" value={numberOfCompletedQuests.toString()} />
         <WeatherIndicator />
       </View>
       <StatusBar style="auto" />
