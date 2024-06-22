@@ -20,7 +20,9 @@ const HomeScreen = () => {
   const [date, setDate] = useState(new Date());
   const healthData = useHealthData();
   const [steps, setSteps] = useState(healthData.steps);
+  const [totalSteps, setTotalSteps] = useState(healthData.totalSteps);
   const [distance, setDistance] = useState(healthData.distance);
+  const [totalDistance, setTotalDistance] = useState(healthData.totalDistance);
   const stepLength = 0.762; // Average step length in meters
   //const distance = steps * stepLength; // convert steps to distance
 
@@ -36,7 +38,9 @@ const HomeScreen = () => {
   // otherwise steps doesn't update correctly
   useEffect(() => {
     setSteps(healthData.steps);
+    setTotalSteps(healthData.totalSteps);
     setDistance(healthData.distance);
+    setTotalDistance(healthData.totalDistance);
   }, [healthData]);
 
   // Load user data and health data on mount and when the screen is focused
@@ -83,6 +87,8 @@ const HomeScreen = () => {
       <View style={styles.values}>
         <Value label="Daily Steps" value={steps.toString()} />
         <Value label="Daily Distance" value={`${(distance / 1000).toFixed(2)} km`} />
+        <Value label="Total Steps" value={totalSteps.toString()} />
+        <Value label="Total Distance" value={`${(totalDistance / 1000).toFixed(2)} km`} />
         <Value label="Quests Completed" value={numberOfCompletedQuests.toString()} />
       </View>
       <StatusBar style="auto" />
@@ -99,7 +105,7 @@ const styles = StyleSheet.create({
   },
   values: {
     flexDirection: 'row',
-    gap: 25,
+    gap: 30,
     flexWrap: 'wrap',
     marginTop: 100,
   },
