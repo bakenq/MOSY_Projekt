@@ -10,6 +10,7 @@ import { AntDesign } from '@expo/vector-icons';
 import HomeScreen from './src/screens/HomeScreen';
 import QuestsScreen from './src/screens/QuestsScreen';
 import AchievementsScreen from './src/screens/AchievementsScreen';
+import StatsScreen from './src/screens/StatsScreen';
 import { act } from 'react';
 
 /*
@@ -33,6 +34,8 @@ export default function App() {
               iconName = 'bars';
             } else if (route.name === 'Achievements') {
               iconName = 'star';
+            } else if (route.name === 'Stats') {
+              iconName = 'linechart';
             }
 
             return <AntDesign name={iconName} size={size} color={color} />;
@@ -48,6 +51,7 @@ export default function App() {
       >
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Quests" component={QuestsScreen} />
+        <Tab.Screen name="Stats" component={StatsScreen} />
         <Tab.Screen name="Achievements" component={AchievementsScreen} />
       </Tab.Navigator>
     </NavigationContainer>

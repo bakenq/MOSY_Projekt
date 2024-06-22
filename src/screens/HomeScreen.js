@@ -87,8 +87,6 @@ const HomeScreen = () => {
       <View style={styles.values}>
         <Value label="Daily Steps" value={steps.toString()} />
         <Value label="Daily Distance" value={`${(distance / 1000).toFixed(2)} km`} />
-        <Value label="Total Steps" value={totalSteps.toString()} />
-        <Value label="Total Distance" value={`${(totalDistance / 1000).toFixed(2)} km`} />
         <Value label="Quests Completed" value={numberOfCompletedQuests.toString()} />
       </View>
       <StatusBar style="auto" />
@@ -105,16 +103,17 @@ const styles = StyleSheet.create({
   },
   values: {
     flexDirection: 'row',
-    gap: 30,
+    rowGap: 5,
+    columnGap: 30,
     flexWrap: 'wrap',
-    marginTop: 100,
+    marginTop: 50,
   },
   level: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: 25,
     flexWrap: 'wrap',
-    marginTop: 20,
+    marginTop: 5,
   },
 });
 
