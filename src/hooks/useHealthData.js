@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
 import GoogleFit, { Scopes } from 'react-native-google-fit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,51 +8,11 @@ const useHealthData = () => {
     const [distance, setDistance] = useState(0);
     const [totalDistance, setTotalDistance] = useState(0);
     const [isAuthorized, setIsAuthorized] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Authorize once when the component mounts
     useEffect(() => {
-        const options = {
-            scopes: [
-                Scopes.FITNESS_ACTIVITY_READ,
-                Scopes.FITNESS_ACTIVITY_WRITE,
-                Scopes.FITNESS_LOCATION_READ,
-                Scopes.FITNESS_BODY_READ,
-            ],
-        };
-
-        GoogleFit.authorize(options)
-            .then((authResult) => {
-                if (authResult.success) {
-                    console.log('AUTH SUCCESS');
-                    setIsAuthorized(true);
-                    fetchStepCount(); // Initial fetch
-                    fetchDistance(); // Initial fetch
-                } else {
-                    console.log('AUTH FAILED', authResult.message);
-                }
-            })
-            .catch(() => {
-                console.log('AUTH ERROR');
-            });
-    }, []);
-
-    // Fetch data periodically
-    useEffect(() => {
-        if (isAuthorized) {
-            const intervalId = setInterval(() => {
-                fetchStepCount();
-                fetchDistance();
-                console.log('Steps/Distance refreshed...');
-            }, 30000); // Fetch every 60 seconds
-
-            return () => clearInterval(intervalId); // Cleanup interval on unmount
-        }
-    }, [isAuthorized]);
-
-    /*
-    // Fetching is triggered when screen is focused
-    useFocusEffect(
-        useCallback(() => {
+        const authorize = async () => {
             const options = {
                 scopes: [
                     Scopes.FITNESS_ACTIVITY_READ,
@@ -63,33 +22,56 @@ const useHealthData = () => {
                 ],
             };
 
-            GoogleFit.authorize(options)
-                .then((authResult) => {
-                    if (authResult.success) {
-                        console.log('AUTH SUCCESS');
-                        fetchStepCount();
-                        fetchDistance();
-                    } else {
-                        console.log('AUTH FAILED', authResult.message);
-                    }
-                })
-                .catch(() => {
-                    console.log('AUTH ERROR');
-                });
-        }, [])
-    );
-    */
+            try {
+                const authResult = await GoogleFit.authorize(options);
+                if (authResult.success) {
+                    console.log('AUTH SUCCESS');
+                    setIsAuthorized(true);
+                    await fetchData(); // Initial fetch for both steps and distance
+                } else {
+                    console.log('AUTH FAILED', authResult.message);
+                    setError('Authorization failed');
+                }
+            } catch (err) {
+                console.log('AUTH ERROR', err);
+                setError('Authorization error');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const fetchStepCount = async () => {
+        authorize();
+    }, []);
+
+    useEffect(() => {
+        if (isAuthorized) {
+            const intervalId = setInterval(() => {
+                fetchData();
+                console.log('Steps/Distance refreshed...');
+            }, 60000); // Fetch every 60 seconds
+
+            return () => clearInterval(intervalId); // Cleanup interval on unmount
+        }
+    }, [isAuthorized]);
+
+    const fetchData = async () => {
+        setLoading(true);
         const now = new Date();
         const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
         const endDate = now.toISOString();
-        //console.log('Start Date:', startDate, 'End Date:', now.toISOString());
 
-        const opt = {
-            startDate: startDate,
-            endDate: endDate,
-        };
+        try {
+            await Promise.all([fetchStepCount(startDate, endDate), fetchDistance(startDate, endDate)]);
+        } catch (err) {
+            console.warn('Error fetching health data:', err);
+            setError('Error fetching health data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchStepCount = async (startDate, endDate) => {
+        const opt = { startDate, endDate };
 
         try {
             const res = await GoogleFit.getDailyStepCountSamples(opt);
@@ -102,47 +84,32 @@ const useHealthData = () => {
             const totalSteps = storedTotalSteps ? parseInt(storedTotalSteps) : 0;
             const lastSteps = storedLastSteps ? parseInt(storedLastSteps) : 0;
 
+            console.log(dailySteps, lastSteps, dailySteps > lastSteps);
             if (storedLastFetchedDate !== startDate) {
-                // Debug
-                console.log('New Day Steps');
-                // New day, reset daily steps in storage and add today's steps to total
                 const newTotal = totalSteps + dailySteps;
-                console.log('New Total Steps:', newTotal);
                 setTotalSteps(newTotal);
                 await AsyncStorage.setItem('totalSteps', newTotal.toString());
                 await AsyncStorage.setItem('lastFetchedDate', startDate);
                 await AsyncStorage.setItem('lastSteps', dailySteps.toString());
-            } else {
-                
-                // Same day, update total only if steps increased
-                console.log(dailySteps, lastSteps, totalSteps);
-                if (dailySteps > lastSteps) {
-                    //console.log(dailySteps, lastSteps);
-                    const newTotal = totalSteps + (dailySteps - lastSteps);
-                    //console.log('New Total Steps:', newTotal);
-                    setTotalSteps(newTotal);
-                    await AsyncStorage.setItem('totalSteps', newTotal.toString());
-                }
+            } else if (dailySteps > lastSteps) {
+                const newTotal = totalSteps + (dailySteps - lastSteps);
+                setTotalSteps(newTotal);
+                await AsyncStorage.setItem('totalSteps', newTotal.toString());
                 await AsyncStorage.setItem('lastSteps', dailySteps.toString());
+            } else {
+                await AsyncStorage.setItem('lastSteps', dailySteps.toString());
+                setTotalSteps(totalSteps);
             }
 
-            //console.log('Daily Steps:', dailySteps);
             setSteps(dailySteps);
         } catch (err) {
             console.warn('Error fetching steps data:', err);
+            throw err;
         }
-
     };
 
-    const fetchDistance = async () => {
-        const now = new Date();
-        const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-        const endDate = now.toISOString();
-
-        const opt = {
-            startDate: startDate,
-            endDate: endDate,
-        };
+    const fetchDistance = async (startDate, endDate) => {
+        const opt = { startDate, endDate };
 
         try {
             const res = await GoogleFit.getDailyDistanceSamples(opt);
@@ -155,36 +122,31 @@ const useHealthData = () => {
             const totalDistance = storedTotalDistance ? parseFloat(storedTotalDistance) : 0;
             const lastDistance = storedLastDistance ? parseFloat(storedLastDistance) : 0;
 
+            console.log(dailyDistance, lastDistance, dailyDistance > lastDistance);
             if (storedLastFetchedDateDistance !== startDate) {
-                // Debug
-                console.log('New Day Distance');
-                // New day, reset daily distance in storage and add today's distance to total
                 const newTotalDistance = totalDistance + dailyDistance;
-                //console.log('New Total Distance:', newTotalDistance);
                 setTotalDistance(newTotalDistance);
                 await AsyncStorage.setItem('totalDistance', newTotalDistance.toString());
                 await AsyncStorage.setItem('lastFetchedDateDistance', startDate);
                 await AsyncStorage.setItem('lastDistance', dailyDistance.toString());
-            } else {
-                // Same day, update total only if distance increased
-                console.log(dailyDistance, lastDistance);
-                if (dailyDistance > lastDistance) {
-                    const newTotalDistance = totalDistance + (dailyDistance - lastDistance);
-                    //console.log('New Total Distance:', newTotalDistance);
-                    setTotalDistance(newTotalDistance);
-                    await AsyncStorage.setItem('totalDistance', newTotalDistance.toString());
-                }
+            } else if (dailyDistance > lastDistance) {
+                const newTotalDistance = totalDistance + (dailyDistance - lastDistance);
+                setTotalDistance(newTotalDistance);
+                await AsyncStorage.setItem('totalDistance', newTotalDistance.toString());
                 await AsyncStorage.setItem('lastDistance', dailyDistance.toString());
+            } else {
+                await AsyncStorage.setItem('lastDistance', dailyDistance.toString());
+                setTotalDistance(totalDistance);
             }
 
-            //console.log('Daily Distance:', dailyDistance, 'meters');
             setDistance(dailyDistance);
         } catch (err) {
             console.warn('Error fetching distance data:', err);
+            throw err;
         }
     };
 
-    return { steps, totalSteps, distance, totalDistance };
+    return { steps, totalSteps, distance, totalDistance, loading, error };
 };
 
 export default useHealthData;
