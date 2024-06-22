@@ -69,8 +69,8 @@ const HomeScreen = () => {
       if (level) setUserLevel(parseInt(level));
       if (numberOfCompletedQuests) setNumberOfCompletedQuests(parseInt(numberOfCompletedQuests));
       //Debugging
-      console.log('Home: Loaded XP:', xp);
-      console.log('Home: Loaded Level:', level);
+      //console.log('Home: Loaded XP:', xp);
+      //console.log('Home: Loaded Level:', level);
       //if (completed) setCompletedQuests(JSON.parse(completed));
     } catch (error) {
       console.error('Error loading data:', error);

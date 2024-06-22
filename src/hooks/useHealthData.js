@@ -43,7 +43,8 @@ const useHealthData = () => {
             const intervalId = setInterval(() => {
                 fetchStepCount();
                 fetchDistance();
-            }, 60000); // Fetch every 60 seconds
+                console.log('Steps/Distance refreshed...');
+            }, 30000); // Fetch every 60 seconds
 
             return () => clearInterval(intervalId); // Cleanup interval on unmount
         }
@@ -114,17 +115,18 @@ const useHealthData = () => {
             } else {
                 
                 // Same day, update total only if steps increased
-                if (dailySteps >= lastSteps) {
+                console.log(dailySteps, lastSteps, totalSteps);
+                if (dailySteps > lastSteps) {
                     //console.log(dailySteps, lastSteps);
                     const newTotal = totalSteps + (dailySteps - lastSteps);
-                    console.log('New Total Steps:', newTotal);
+                    //console.log('New Total Steps:', newTotal);
                     setTotalSteps(newTotal);
                     await AsyncStorage.setItem('totalSteps', newTotal.toString());
                 }
                 await AsyncStorage.setItem('lastSteps', dailySteps.toString());
             }
 
-            console.log('Daily Steps:', dailySteps);
+            //console.log('Daily Steps:', dailySteps);
             setSteps(dailySteps);
         } catch (err) {
             console.warn('Error fetching steps data:', err);
@@ -142,17 +144,6 @@ const useHealthData = () => {
             endDate: endDate,
         };
 
-        /*
-        GoogleFit.getDailyDistanceSamples(opt)
-            .then((res) => {
-                console.log('Daily Distance:', res[0].distance, 'meters');
-                setDistance(res[0].distance); // set the distance state to fetched data
-            })
-            .catch((err) => {
-                console.warn('Error fetching distance data. No distance data available for today or no data could be fetched.', err);
-            });
-            */
-
         try {
             const res = await GoogleFit.getDailyDistanceSamples(opt);
             const dailyDistance = res[0]?.distance || 0;
@@ -165,25 +156,28 @@ const useHealthData = () => {
             const lastDistance = storedLastDistance ? parseFloat(storedLastDistance) : 0;
 
             if (storedLastFetchedDateDistance !== startDate) {
+                // Debug
+                console.log('New Day Distance');
                 // New day, reset daily distance in storage and add today's distance to total
                 const newTotalDistance = totalDistance + dailyDistance;
-                console.log('New Total Distance:', newTotalDistance);
+                //console.log('New Total Distance:', newTotalDistance);
                 setTotalDistance(newTotalDistance);
                 await AsyncStorage.setItem('totalDistance', newTotalDistance.toString());
                 await AsyncStorage.setItem('lastFetchedDateDistance', startDate);
                 await AsyncStorage.setItem('lastDistance', dailyDistance.toString());
             } else {
                 // Same day, update total only if distance increased
-                if (dailyDistance >= lastDistance) {
+                console.log(dailyDistance, lastDistance);
+                if (dailyDistance > lastDistance) {
                     const newTotalDistance = totalDistance + (dailyDistance - lastDistance);
-                    console.log('New Total Distance:', newTotalDistance);
+                    //console.log('New Total Distance:', newTotalDistance);
                     setTotalDistance(newTotalDistance);
                     await AsyncStorage.setItem('totalDistance', newTotalDistance.toString());
                 }
                 await AsyncStorage.setItem('lastDistance', dailyDistance.toString());
             }
 
-            console.log('Daily Distance:', dailyDistance, 'meters');
+            //console.log('Daily Distance:', dailyDistance, 'meters');
             setDistance(dailyDistance);
         } catch (err) {
             console.warn('Error fetching distance data:', err);
