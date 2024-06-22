@@ -36,6 +36,7 @@ const Quests = ({ steps }) => {
   useEffect(() => {
     if (isFocused) {
       resetClaimedQuestsDaily();
+      resetCompletedQuestsDaily();
     }
   }, [isFocused]);
 
@@ -89,6 +90,18 @@ const Quests = ({ steps }) => {
       console.error('Error saving data:', error);
     }
 
+  };
+
+  const resetCompletedQuestsDaily = async () => {
+    const today = new Date().toISOString().split('T')[0];
+    const lastResetDate = await AsyncStorage.getItem('lastResetDate');
+
+    if (lastResetDate !== today) {
+      console.log('Resetting completed quests for the day');
+      setCompletedQuests([]);
+      await AsyncStorage.setItem('lastResetDate', today);
+      await AsyncStorage.setItem('completedQuests', JSON.stringify([]));
+    }
   };
 
   const checkQuestCompletion = () => {
