@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Value from '../components/Value';
 import RingProgress from '../components/RingProgress';
+import WeatherIndicator from '../components/WeatherIndicator';
 
 import useHealthData from '../hooks/useHealthData';
 
@@ -88,6 +89,7 @@ const HomeScreen = () => {
         <Value label="Daily Steps" value={steps.toString()} />
         <Value label="Daily Distance" value={`${(distance / 1000).toFixed(2)} km`} />
         <Value label="Quests Completed" value={numberOfCompletedQuests.toString()} />
+        <WeatherIndicator />
       </View>
       <StatusBar style="auto" />
     </View>
