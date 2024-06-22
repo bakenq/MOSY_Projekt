@@ -1,11 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { useState, useEffect } from 'react';
 
 import Achievements from '../components/Achievements';
+import useHealthData from '../hooks/useHealthData';
 
 function AchievementsScreen() {
+  const healthData = useHealthData();
+
   return (
     <View style={styles.container}>
-      <Achievements steps={10000} />
+      <Achievements steps={healthData.totalSteps} distance={healthData.totalDistance} />
     </View>
   );
 }

@@ -1,16 +1,42 @@
 [
     {
       "id": 1,
+      "type": "steps",
       "title": "Walk Warrior",
       "description": "Take 50000 steps in total",
-      "targetSteps": 50000,
+      "target": 50000,
       "xpReward": 5000
     },
     {
       "id": 2,
+      "type": "steps",
       "title": "Walk Master",
       "description": "Take 100000 steps in total",
-      "targetSteps": 100000,
+      "target": 100000,
+      "xpReward": 10000
+    },
+    {
+      "id": 3,
+      "type": "steps",
+      "title": "Walk Maniac",
+      "description": "Take 150000 steps in total",
+      "target": 150000,
+      "xpReward": 15000
+    },
+    {
+      "id": 4,
+      "type": "distance",
+      "title": "I would walk 25km...",
+      "description": "Walk 25km in total",
+      "target": 25000,
+      "xpReward": 10000
+    },
+    {
+      "id": 5,
+      "type": "distance",
+      "title": "...And I would 25km more",
+      "description": "Walk 50km in total",
+      "target": 50000,
       "xpReward": 10000
     }
   ]

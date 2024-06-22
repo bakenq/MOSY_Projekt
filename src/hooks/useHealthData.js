@@ -97,8 +97,10 @@ const useHealthData = () => {
                 await AsyncStorage.setItem('totalSteps', newTotal.toString());
                 await AsyncStorage.setItem('lastSteps', dailySteps.toString());
             } else {
-                await AsyncStorage.setItem('lastSteps', dailySteps.toString());
-                setTotalSteps(totalSteps);
+                if (dailySteps > 0) {
+                    await AsyncStorage.setItem('lastSteps', dailySteps.toString());
+                    setTotalSteps(totalSteps);
+                }
             }
 
             setSteps(dailySteps);
@@ -135,8 +137,10 @@ const useHealthData = () => {
                 await AsyncStorage.setItem('totalDistance', newTotalDistance.toString());
                 await AsyncStorage.setItem('lastDistance', dailyDistance.toString());
             } else {
-                await AsyncStorage.setItem('lastDistance', dailyDistance.toString());
-                setTotalDistance(totalDistance);
+                if (dailyDistance > 0) {
+                    await AsyncStorage.setItem('lastDistance', dailyDistance.toString());
+                    setTotalDistance(totalDistance);
+                }
             }
 
             setDistance(dailyDistance);
