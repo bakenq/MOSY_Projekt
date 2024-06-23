@@ -9,6 +9,9 @@ import useHealthData from '../hooks/useHealthData';
 const StatsScreen = () => {
     const healthData = useHealthData();
 
+    const [weeklySteps, setWeeklySteps] = useState(healthData.weeklySteps);
+    const [weeklyDistance, setWeeklyDistance] = useState(healthData.weeklyDistance);
+
     const [totalSteps, setTotalSteps] = useState(healthData.totalSteps);
     const [totalDistance, setTotalDistance] = useState(healthData.totalDistance);
 
@@ -21,13 +24,15 @@ const StatsScreen = () => {
     }, []);
 
     useEffect(() => {
+        setWeeklySteps(healthData.weeklySteps);
+        setWeeklyDistance(healthData.weeklyDistance);
         setTotalSteps(healthData.totalSteps);
         setTotalDistance(healthData.totalDistance);
     }, [healthData]);
 
     useEffect(() => {
         loadData();
-      }, [numberOfCompletedQuests]);
+    }, [numberOfCompletedQuests]);
 
     const loadData = async () => {
         try {
@@ -43,10 +48,14 @@ const StatsScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.values}>
+                <Value label="Weekly Steps" value={weeklySteps.toString()} />
+                <Value label="Weekly Distance" value={`${(weeklyDistance / 1000).toFixed(2)} km`} />
+
                 <Value label="Total Steps" value={totalSteps.toString()} />
                 <Value label="Total Distance" value={`${(totalDistance / 1000).toFixed(2)} km`} />
-                {/*To be implemented*/}
+
                 <Value label="Quests completed" value={numberOfCompletedQuests.toString()} />
+                {/*To be implemented*/}
                 <Value label="Achievements completed" value={"0"} />
             </View>
         </View>
@@ -57,7 +66,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        justifyContent: 'center',
         padding: 12,
     },
     values: {

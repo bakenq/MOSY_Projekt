@@ -4,9 +4,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useHealthData = () => {
     const [steps, setSteps] = useState(0);
+    const [weeklySteps, setWeeklySteps] = useState(0);
     const [totalSteps, setTotalSteps] = useState(0);
+
     const [distance, setDistance] = useState(0);
+    const [weeklyDistance, setWeeklyDistance] = useState(0);
     const [totalDistance, setTotalDistance] = useState(0);
+
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -61,7 +65,7 @@ const useHealthData = () => {
         const endDate = now.toISOString();
 
         try {
-            await Promise.all([fetchStepCount(startDate, endDate), fetchDistance(startDate, endDate)]);
+            await Promise.all([fetchStepCount(startDate, endDate), fetchDistance(startDate, endDate), fetchWeeklySteps(), fetchWeeklyDistance()]);
         } catch (err) {
             console.warn('Error fetching health data:', err);
             setError('Error fetching health data');
@@ -150,7 +154,41 @@ const useHealthData = () => {
         }
     };
 
-    return { steps, totalSteps, distance, totalDistance, loading, error };
+    const fetchWeeklySteps = async () => {
+        const now = new Date();
+        const startDate = new Date(now.setDate(now.getDate() - 7)).toISOString();
+        const endDate = new Date().toISOString();
+
+        const opt = { startDate, endDate };
+
+        try {
+            const res = await GoogleFit.getDailyStepCountSamples(opt);
+            const weeklySteps = res[2]?.steps.reduce((total, day) => total + day.value, 0) || 0;
+            setWeeklySteps(weeklySteps);
+        } catch (err) {
+            console.warn('Error fetching weekly steps data:', err);
+            throw err;
+        }
+    };
+
+    const fetchWeeklyDistance = async () => {
+        const now = new Date();
+        const startDate = new Date(now.setDate(now.getDate() - 7)).toISOString();
+        const endDate = new Date().toISOString();
+
+        const opt = { startDate, endDate };
+
+        try {
+            const res = await GoogleFit.getDailyDistanceSamples(opt);
+            const weeklyDistance = res.reduce((total, day) => total + day.distance, 0) || 0;
+            setWeeklyDistance(weeklyDistance);
+        } catch (err) {
+            console.warn('Error fetching weekly distance data:', err);
+            throw err;
+        }
+    };
+
+    return { steps, weeklySteps, totalSteps, distance, weeklyDistance, totalDistance, loading, error };
 };
 
 export default useHealthData;
