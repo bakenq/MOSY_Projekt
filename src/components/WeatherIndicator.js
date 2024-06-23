@@ -6,15 +6,15 @@ import axios from 'axios';
 const API_KEY = 'e905c71e69c8a0b6b9bc39934efd9ee9';
 const CITY = 'Hamburg'; // Example city
 
-const WeatherIndicator = () => {
+const WeatherIndicator = ({}) => {
     const [weather, setWeather] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchWeather = async () => {
-            console.log(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`);
+            //console.log(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`);
             try {
                 const response = await axios.get(
-
                     `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`
                 );
                 setWeather(response.data.weather[0]);
@@ -77,6 +77,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     iconContainer: {
+        alignItems: 'left',
+    },
+    error: {
+        color: 'red',
+        fontSize: 16,
+        textAlign: 'center',
     },
 });
 

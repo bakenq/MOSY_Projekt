@@ -48,7 +48,7 @@ const useHealthData = () => {
             const intervalId = setInterval(() => {
                 fetchData();
                 console.log('Steps/Distance refreshed...');
-            }, 60000); // Fetch every 60 seconds
+            }, 180000); // Fetch every 180 seconds
 
             return () => clearInterval(intervalId); // Cleanup interval on unmount
         }

@@ -38,5 +38,23 @@
       "description": "Walk 50km in total",
       "target": 50000,
       "xpReward": 10000
+    },
+    {
+      "id": 6,
+      "type": "steps_weather",
+      "title": "Rain Walker",
+      "description": "Take 10000 steps in rainy weather",
+      "target": 10000,
+      "xpReward": 2500,
+      "weather": "Rain"
+    },
+    {
+      "id": 7,
+      "type": "steps_weather",
+      "title": "Sun Walker",
+      "description": "Take 10000 steps in sunny weather",
+      "target": 10000,
+      "xpReward": 2500,
+      "weather": "Sunny"
     }
   ]
