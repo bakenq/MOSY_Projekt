@@ -35,7 +35,7 @@ function AchievementsScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.text}>Loading weather data...</Text>
+        <Text style={styles.text}>Loading Achievements...</Text>
       </View>
     );
   }

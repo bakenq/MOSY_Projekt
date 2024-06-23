@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Value from '../components/Value';
+import WeeklyStepsChart from '../components/WeeklyStepsChart';
 import useHealthData from '../hooks/useHealthData';
 
 const StatsScreen = () => {
     const healthData = useHealthData();
 
     const [weeklySteps, setWeeklySteps] = useState(healthData.weeklySteps);
+    const [weeklyStepsDays, setWeeklyStepsDays] = useState(healthData.dailySteps);
     const [weeklyDistance, setWeeklyDistance] = useState(healthData.weeklyDistance);
 
     const [totalSteps, setTotalSteps] = useState(healthData.totalSteps);
@@ -25,7 +27,9 @@ const StatsScreen = () => {
 
     useEffect(() => {
         setWeeklySteps(healthData.weeklySteps);
+        setWeeklyStepsDays(healthData.dailySteps);
         setWeeklyDistance(healthData.weeklyDistance);
+
         setTotalSteps(healthData.totalSteps);
         setTotalDistance(healthData.totalDistance);
     }, [healthData]);
@@ -48,6 +52,8 @@ const StatsScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.values}>
+                <WeeklyStepsChart weeklySteps={weeklyStepsDays} />
+
                 <Value label="Weekly Steps" value={weeklySteps.toString()} />
                 <Value label="Weekly Distance" value={`${(weeklyDistance / 1000).toFixed(2)} km`} />
 
@@ -58,6 +64,7 @@ const StatsScreen = () => {
                 {/*To be implemented*/}
                 <Value label="Achievements completed" value={"0"} />
             </View>
+
         </View>
     );
 }

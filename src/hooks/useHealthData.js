@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const useHealthData = () => {
     const [steps, setSteps] = useState(0);
     const [weeklySteps, setWeeklySteps] = useState(0);
+    const [dailySteps, setDailySteps] = useState([]);
     const [totalSteps, setTotalSteps] = useState(0);
 
     const [distance, setDistance] = useState(0);
@@ -65,7 +66,13 @@ const useHealthData = () => {
         const endDate = now.toISOString();
 
         try {
-            await Promise.all([fetchStepCount(startDate, endDate), fetchDistance(startDate, endDate), fetchWeeklySteps(), fetchWeeklyDistance()]);
+            await Promise.all([
+                fetchStepCount(startDate, endDate),
+                fetchDistance(startDate, endDate),
+                fetchWeeklySteps(),
+                fetchWeeklyDistance(),
+                fetchDailySteps(),
+            ]);
         } catch (err) {
             console.warn('Error fetching health data:', err);
             setError('Error fetching health data');
@@ -188,7 +195,30 @@ const useHealthData = () => {
         }
     };
 
-    return { steps, weeklySteps, totalSteps, distance, weeklyDistance, totalDistance, loading, error };
+    const fetchDailySteps = async () => {
+        const now = new Date();
+        let dailyStepsData = [];
+
+        for (let i = 0; i < 7; i++) {
+            const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i).toISOString();
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 1);
+            const opt = { startDate, endDate: endDate.toISOString() };
+
+            try {
+                const res = await GoogleFit.getDailyStepCountSamples(opt);
+                const dailySteps = res[2]?.steps[0]?.value || 0;
+                dailyStepsData.push(dailySteps);
+            } catch (err) {
+                console.warn(`Error fetching steps data for ${startDate}:`, err);
+                dailyStepsData.push(0); // Push 0 if data fetching fails for that day
+            }
+        }
+
+        setDailySteps(dailyStepsData.reverse()); // Reverse array to show data in chronological order (oldest to newest)
+    };
+
+    return { steps, weeklySteps, dailySteps, totalSteps, distance, weeklyDistance, totalDistance, loading, error };
 };
 
 export default useHealthData;
