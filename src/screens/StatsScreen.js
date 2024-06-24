@@ -51,9 +51,10 @@ const StatsScreen = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.values}>
+            <View style={styles.chart}>
                 <WeeklyStepsChart weeklySteps={weeklyStepsDays} />
-
+            </View>
+            <View style={styles.values}>
                 <Value label="Weekly Steps" value={weeklySteps.toString()} />
                 <Value label="Weekly Distance" value={`${(weeklyDistance / 1000).toFixed(2)} km`} />
 
@@ -75,12 +76,18 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         padding: 12,
     },
+    chart: {
+        flexDirection: 'column',
+        rowGap: 5,
+        columnGap: 30,
+        flexWrap: 'wrap',
+        marginTop: 50,
+    },
     values: {
         flexDirection: 'row',
         rowGap: 5,
         columnGap: 30,
         flexWrap: 'wrap',
-        marginTop: 50,
     },
 });
 

@@ -6,39 +6,38 @@ import * as d3Scale from 'd3-scale';
 const WeeklyStepsChart = ({ weeklySteps }) => {
     const chartWidth = Dimensions.get('window').width - 40;
     const chartHeight = 150;
-    const barWidth = 20;
+    const barWidth = (chartWidth - (weeklySteps.length - 1) * 15) / weeklySteps.length;
     const maxValue = Math.max(...weeklySteps);
     const yScale = d3Scale.scaleLinear().domain([0, maxValue]).range([0, chartHeight]);
 
-    const barSpacing = 15;
+    const barSpacing = 13;
 
 
     return (
         <View style={styles.container}>
             <Text style={styles.chartTitle}>Steps Taken Last 7 Days</Text>
-            <Svg width={chartWidth} height={chartHeight}>
+            <Svg width={chartWidth} height={chartHeight + 20}>
                 {weeklySteps.map((steps, index) => (
                     <React.Fragment key={index}>
+                        {/* Chart */}
                         <Rect
                             key={index}
-                            x={index * (chartWidth / weeklySteps.length)}
+                            x={index * (barWidth + barSpacing)}
                             y={chartHeight - yScale(steps)}
-                            width={chartWidth / weeklySteps.length - barSpacing}
+                            width={barWidth}
                             height={yScale(steps)}
                             fill="#EE0F55"
                         />
-                        {/*}
+                        {/* Text */}
                         <SvgText
-                            x={index * (chartWidth / weeklySteps.length) + (chartWidth / weeklySteps.length - barSpacing) / 2}
-                            y={chartHeight - 5} // Adjust Y position for text alignment
-                            fill="white"
-                            color="white"
+                            x={index * (barWidth + barSpacing) + barWidth / 2}
+                            y={chartHeight + 20} // Position below the bars
+                            fill="#AFB3BE"
                             fontSize="14"
                             textAnchor="middle"
                         >
                             {steps}
                         </SvgText>
-                        {*/}
                     </React.Fragment>
                 ))}
             </Svg>
