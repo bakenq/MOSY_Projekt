@@ -12,8 +12,8 @@ const WeatherIndicator = ({}) => {
 
     useEffect(() => {
         const fetchWeather = async () => {
-            console.log(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`);
-            console.log(weather.description)
+            //console.log(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`);
+            //console.log(weather.description)
             try {
                 const response = await axios.get(
                     `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`
