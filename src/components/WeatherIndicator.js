@@ -12,7 +12,8 @@ const WeatherIndicator = ({}) => {
 
     useEffect(() => {
         const fetchWeather = async () => {
-            //console.log(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`);
+            console.log(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`);
+            console.log(weather.description)
             try {
                 const response = await axios.get(
                     `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`
@@ -47,8 +48,13 @@ const WeatherIndicator = ({}) => {
                 iconName = 'weather-sunny';
                 break;
             case 'Clouds':
-                iconName = 'weather-cloudy';
-                break;
+                if (weather.description === 'few clouds' || weather.description === 'scattered clouds') {
+                    iconName = 'weather-partly-cloudy';
+                    break;
+                } else {
+                    iconName = 'weather-cloudy';
+                    break;
+                }           
             default:
                 iconName = 'weather-sunny';
                 break;
