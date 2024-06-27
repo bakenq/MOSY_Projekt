@@ -5,11 +5,11 @@ import { useEffect } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 
-// SVGs
-import SnailSVG from '../../assets/Snail/Snail.svg';
-import SnailHatSVG from '../../assets/Snail/Snail_Hat.svg';
-import SnailTieSVG from '../../assets/Snail/Snail_Tie.svg';
-import SnailHatTieSVG from '../../assets/Snail/Snail_Hat_Tie.svg';
+// Snail SVGs
+import SnailSVG from '../../assets/SnailRed/Snail.svg';
+import SnailHatSVG from '../../assets/SnailRed/Snail_Hat.svg';
+import SnailTieSVG from '../../assets/SnailRed/Snail_Tie.svg';
+import SnailHatTieSVG from '../../assets/SnailRed/Snail_Hat_Tie.svg';
 
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -68,13 +68,6 @@ const RingProgress = ({ radius = 125, strokeWidth = 35, progress, level }) => {
     return (
         <View style={{ width: radius * 2, height: radius * 2, alignSelf: 'center', }}>
             <SVG>
-                <Circle
-                    {...circleDefaultProps}
-                    r={radius - strokeWidth * 1.5}
-                    stroke='transparent'
-                    fill='#AFB3BE'
-                    opacity={0.35}
-                />
                 {/* Background Ring */}
                 <Circle
                     {...circleDefaultProps}
