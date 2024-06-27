@@ -80,7 +80,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <RingProgress radius={150} strokeWidth={40} progress={userXP / 1000} />
+      <RingProgress radius={150} strokeWidth={40} progress={userXP / 1000} level={userLevel} />
       <View style={styles.level}>
         <Value label="Level" value={userLevel} />
         <Value label="XP" value={`${userXP}/1000`} />

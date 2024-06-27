@@ -1,16 +1,35 @@
 import { View, Text } from 'react-native';
-import SVG, { Circle } from 'react-native-svg';
+import SVG, { Circle, SvgXml } from 'react-native-svg';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useEffect } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
+
+// SVGs
+import SnailSVG from '../../assets/Snail/Snail.svg';
+import SnailHatSVG from '../../assets/Snail/Snail_Hat.svg';
+import SnailTieSVG from '../../assets/Snail/Snail_Tie.svg';
+import SnailHatTieSVG from '../../assets/Snail/Snail_Hat_Tie.svg';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const color = '#EE0F55';
 
-const RingProgress = ({ radius = 125, strokeWidth = 35, progress }) => {
+const getSVGComponent = (level) => {
+    if (level >= 1 && level <= 4) {
+        return SnailSVG;
+    } else if (level >= 5 && level <= 9) {
+        return SnailHatSVG;
+    } else if (level >= 10) {
+        return SnailHatTieSVG;
+    }
+    // Add more ranges as needed
+    return SnailSVG; // Default SVG if no range matches
+};
+
+const RingProgress = ({ radius = 125, strokeWidth = 35, progress, level }) => {
 
     const innerRadius = radius - strokeWidth / 2;
     const circumference = 2 * Math.PI * innerRadius;
@@ -44,9 +63,19 @@ const RingProgress = ({ radius = 125, strokeWidth = 35, progress }) => {
         rotation: '-90',
     };
 
+    // Get the SVG component based on the level
+    const SelectedSVG = getSVGComponent(level);
+
     return (
         <View style={{ width: radius * 2, height: radius * 2, alignSelf: 'center', }}>
             <SVG>
+                <Circle
+                    {...circleDefaultProps}
+                    r={radius - strokeWidth * 1.5}
+                    stroke='transparent'
+                    fill='#AFB3BE'
+                    opacity={0.35}
+                />
                 {/* Background Ring */}
                 <Circle
                     {...circleDefaultProps}
@@ -57,7 +86,11 @@ const RingProgress = ({ radius = 125, strokeWidth = 35, progress }) => {
                     animatedProps={animatedProps}
                     {...circleDefaultProps}
                 />
+
             </SVG>
+            <View style={{ position: 'absolute', alignSelf: 'center', justifyContent: 'center', alignItems: 'center', width: radius * 2, height: radius * 2 }}>
+                <SelectedSVG width={radius * 1.2} height={radius * 1.2} />
+            </View>
             <AntDesign
                 name="arrowright"
                 size={strokeWidth * 0.8}
