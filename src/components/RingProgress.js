@@ -10,7 +10,6 @@ import SnailSVG from '../../assets/Snail/Snail.svg';
 import SnailHatSVG from '../../assets/Snail/Snail_Hat.svg';
 import SnailTieSVG from '../../assets/Snail/Snail_Tie.svg';
 import SnailHatTieSVG from '../../assets/Snail/Snail_Hat_Tie.svg';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
