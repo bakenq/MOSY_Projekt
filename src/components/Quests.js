@@ -139,10 +139,12 @@ const Quests = ({ steps }) => {
       let newLevel = userLevel;
 
       // Simple level up logic
-      if (newXP >= 1000) {
+      while (newXP >= 1000) {
         newLevel += 1;
         newXP -= 1000;
       }
+
+
 
       const today = new Date().toISOString().split('T')[0];
       const newClaim = { questId, dateClaimed: today };
