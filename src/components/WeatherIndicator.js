@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 
-const API_KEY = 'e905c71e69c8a0b6b9bc39934efd9ee9';
+const API_KEY = '';
 const CITY = 'Hamburg'; // Example city
 
 const WeatherIndicator = ({}) => {
